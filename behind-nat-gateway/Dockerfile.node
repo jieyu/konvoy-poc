@@ -1,5 +1,9 @@
 FROM jieyu/systemd:v0.1.0
 
+RUN yum -y update \
+  && yum -y install iproute \
+  && yum clean all
+
 ARG TELEPORT_URL=https://get.gravitational.com/teleport-v4.1.1-linux-amd64-bin.tar.gz
 
 RUN curl -LsSf $TELEPORT_URL | tar zxv -C / \

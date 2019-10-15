@@ -27,7 +27,9 @@ Therefore, in this POC, we will use Docker containers to simulate hosts in a DMZ
 
 This POC assume you have a MacOS running with latest Docker Desktop for Mac installed.
 
-Please also install [Teleport][teleport-install].
+Please also install the following on your laptop:
+* [Teleport][teleport-install].
+* [Terraform][terraform-install] 0.12 (or newer).
 
 ### Build Docker containers
 
@@ -43,7 +45,7 @@ This is to simulate hosts behind a NAT gateway in a DMZ.
 We would launch two Docker containers to simulate two nodes, one for control plane and one for worker.
 
 ```bash
-make start-nodes
+make start-all
 ```
 
 Each Docker container runs `systemd` inside the Docker container, and launches a [Teleport node][teleport-node] service.
@@ -56,12 +58,11 @@ As a result, you can easily bake this into your ISO image for the hosts in the D
 
 ### Start Teleport server
 
-```bash
-make start-teleport
-```
+The above command will also start the Teleport server on the MacOS host.
 
 This simulates the bootstrap node.
 This would start the Teleport server which runs both the Teleport [auth][teleport-auth] and Teleport [proxy][teleport-proxy] services.
+The configuration of the Teleport server can be found [here](teleport-server.yaml).
 
 Once this server is started, the nodes above will connect to the server automatically.
 
@@ -112,18 +113,22 @@ You can also using regular `ssh` to login to the nodes.
 
 ```bash
 eval `ssh-agent`
+ssh-add -D
 make login
-ssh -o ProxyCommand="ssh -p 3023 %r@localhost -s proxy:%h:%p" root@worker
+ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -o StrictHostKeyChecking=no -p 3023 %r@localhost -s proxy:%h:%p" root@worker
 ```
 
-### Validate Ansible is working
-
-```bash
-ansible -i inventory.yaml all -m shell -a "hostname"
-```
+### Konvoy preflight check
 
 At this point, Ansible should work already.
-You can validate this by running the above command.
+You can validate this by running the Konvoy preflight check.
+
+Note that you need to use the master build of Konvoy which include some fix to make this work.
+https://github.com/mesosphere/konvoy/pull/904
+
+```bash
+konvoy check preflight
+```
 
 ### Clean up
 
@@ -131,7 +136,7 @@ You can validate this by running the above command.
 make clean
 ```
 
-This would stop all Docker containers used by this POC.
+This would stop all Docker containers and the associated artifacts used by this POC.
 
 [reverse-ssh-tunnel]: https://unix.stackexchange.com/questions/46235/how-does-reverse-ssh-tunneling-work
 [teleport]: https://github.com/gravitational/teleport
@@ -141,3 +146,4 @@ This would stop all Docker containers used by this POC.
 [teleport-proxy]: https://gravitational.com/teleport/docs/architecture/
 [teleport-install]: https://gravitational.com/teleport/docs/quickstart/#installing-and-starting
 [teleport-tctl]: https://gravitational.com/teleport/docs/admin-guide/
+[terraform-install]: https://learn.hashicorp.com/terraform/getting-started/install.html

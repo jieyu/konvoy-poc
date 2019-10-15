@@ -1,0 +1,99 @@
+kind: ClusterConfiguration
+apiVersion: konvoy.mesosphere.io/v1alpha1
+metadata:
+  name: behind-nat-gateway
+  creationTimestamp: "2019-10-15T10:10:04.052664-07:00"
+spec:
+  kubernetes:
+    version: 1.15.4
+    controlPlane:
+      controlPlaneEndpointOverride: 172.17.1.251:6443
+      certificate: {}
+      keepalived:
+        enabled: true
+    networking:
+      podSubnet: 10.254.0.0/16
+      serviceSubnet: 10.255.0.0/16
+      httpProxy: ""
+      httpsProxy: ""
+    cloudProvider:
+      provider: none
+    admissionPlugins:
+      enabled:
+      - NodeRestriction
+      - AlwaysPullImages
+      disabled: []
+    preflightChecks:
+      errorsToIgnore:
+      - swap
+      - SystemVerification
+      - filecontent--proc-sys-net-bridge-bridge-nf-call-iptables
+      - filecontent--proc-sys-net-bridge-bridge-nf-call-ip6tables
+  containerNetworking:
+    calico:
+      version: v3.8.2
+  containerRuntime:
+    containerd:
+      version: 1.2.6
+      configData:
+        data: ""
+        replace: false
+  packageRepository:
+    defaultRepositoryInstallationDisabled: false
+  nodePools:
+  - name: worker
+    gpu:
+      nvidia:
+        enabled: false
+  addons:
+    configVersion: master
+    addonsList:
+    - name: elasticsearch
+      enabled: false
+    - name: fluentbit
+      enabled: false
+    - name: kube-oidc-proxy
+      enabled: true
+    - name: prometheus
+      enabled: false
+    - name: dex-k8s-authenticator
+      enabled: true
+    - name: elasticsearchexporter
+      enabled: false
+    - name: konvoyconfig
+      enabled: true
+    - name: dex
+      enabled: true
+    - name: metallb
+      enabled: true
+      values: |
+        configInline:
+          address-pools:
+          - name: default
+            protocol: layer2
+            addresses:
+            - 172.17.1.200-172.17.1.250
+    - name: localvolumeprovisioner
+      enabled: true
+    - name: dashboard
+      enabled: true
+    - name: defaultstorageclass-protection
+      enabled: true
+    - name: gatekeeper
+      enabled: true
+    - name: kibana
+      enabled: false
+    - name: kommander
+      enabled: true
+    - name: opsportal
+      enabled: true
+    - name: prometheusadapter
+      enabled: false
+    - name: cert-manager
+      enabled: true
+    - name: traefik
+      enabled: true
+    - name: traefik-forward-auth
+      enabled: true
+  version: v1.2.1-41-g36a42760
+
