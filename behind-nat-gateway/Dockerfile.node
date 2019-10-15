@@ -1,0 +1,14 @@
+FROM jieyu/systemd:v0.1.0
+
+ARG TELEPORT_URL=https://get.gravitational.com/teleport-v4.1.1-linux-amd64-bin.tar.gz
+
+RUN curl -LsSf $TELEPORT_URL | tar zxv -C / \
+  && /teleport/install \
+  && rm -rf /teleport
+
+COPY webproxy.crt /etc/teleport/
+COPY webproxy.pem /etc/teleport/
+COPY teleport-node.yaml /etc/teleport/teleport.yaml
+COPY teleport.service /usr/lib/systemd/system/teleport.service
+
+RUN systemctl enable teleport

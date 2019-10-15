@@ -1,0 +1,5 @@
+FROM quay.io/gravitational/teleport:4.1.1
+
+COPY webproxy.crt /etc/teleport/
+COPY webproxy.pem /etc/teleport/
+COPY teleport-server.yaml /etc/teleport/teleport.yaml

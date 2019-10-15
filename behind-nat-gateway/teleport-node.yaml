@@ -1,0 +1,25 @@
+#
+# Sample Teleport configuration file.
+#
+teleport:
+  data_dir: /var/lib/teleport
+  pid_file: /var/run/teleport.pid
+  connection_limits:
+    max_connections: 15000
+    max_users: 250
+  log:
+    output: stderr
+    severity: INFO
+proxy_service:
+  https_key_file: /etc/teleport/webproxy.pem
+  https_cert_file: /etc/teleport/webproxy.crt
+ssh_service:
+  enabled: "yes"
+  listen_addr: 127.0.0.1:3022
+  commands:
+  - name: hostname
+    command: [hostname]
+    period: 1m0s
+  - name: arch
+    command: [uname, -p]
+    period: 1h0m0s
