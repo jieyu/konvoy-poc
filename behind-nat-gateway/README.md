@@ -5,10 +5,10 @@ This is a proof of concept (POC) to demonstrate that one can install Konvoy in a
 ## Summary
 
 The main idea is to perform Konvoy install from a publicly accessible node (e.g., in AWS), namely the bootstrap node.
-For Konvoy installer on the bootstrap node to reach the nodes in the DMZ behind a NAT gateway, we can setup [reverse SSH tunnel][reverse-ssh-tunnel] from those nodes to the bootstrap node.
+For the Konvoy installer on the bootstrap node to reach the nodes in the DMZ behind a NAT gateway, we can setup [reverse SSH tunnel][reverse-ssh-tunnel] from those nodes to the bootstrap node.
 This can be achieved easily using an open source software called [Teleport][teleport].
 
-Once SSH tunnels are setup, Konvoy installer should just work as it uses Ansible to install Kubernetes.
+Once SSH tunnels are setup, Konvoy installer should just work because under the hood, it uses Ansible to install Kubernetes.
 And the only thing Ansible requires is to be able to SSH to the target nodes.
 
 To demonstrate the feasibility of this approach, we setup a simulation environment to simulate the network topology.
@@ -16,10 +16,10 @@ To demonstrate the feasibility of this approach, we setup a simulation environme
 ### Simulation environment
 
 Docker on MacOS naturally simulates the network topology mentioned above.
-A Docker container launched on MacOS will be able to access the internet and the MacOS host network using a special DNS [host.docker.internal][docker-host-internal]
+A Docker container launched on MacOS will be able to access the internet and the MacOS host network using a special DNS [host.docker.internal][docker-host-internal].
 However, processes running on the MacOS host are not able to access those containers directly.
 
-Therefore, in this POC, we will use Docker containers to simulate hosts in a DMA behind a NAT gateway, and use MacOS host to simulate the bootstrap node.
+Therefore, in this POC, we will use Docker containers to simulate hosts in a DMZ behind a NAT gateway, and use the MacOS host to simulate the bootstrap node.
 
 ## Steps
 
@@ -140,3 +140,4 @@ This would stop all Docker containers used by this POC.
 [teleport-auth]: https://gravitational.com/teleport/docs/architecture/
 [teleport-proxy]: https://gravitational.com/teleport/docs/architecture/
 [teleport-install]: https://gravitational.com/teleport/docs/quickstart/#installing-and-starting
+[teleport-tctl]: https://gravitational.com/teleport/docs/admin-guide/
