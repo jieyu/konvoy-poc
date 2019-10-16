@@ -80,11 +80,11 @@ spec:
     - name: defaultstorageclass-protection
       enabled: true
     - name: gatekeeper
-      enabled: true
+      enabled: false
     - name: kibana
       enabled: false
     - name: kommander
-      enabled: true
+      enabled: false
     - name: opsportal
       enabled: true
     - name: prometheusadapter

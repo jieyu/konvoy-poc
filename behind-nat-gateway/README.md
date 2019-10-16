@@ -130,6 +130,40 @@ https://github.com/mesosphere/konvoy/pull/904
 konvoy check preflight
 ```
 
+### Deploy Kubernetes and container networking
+
+Run the following commands to deploy Kubernetes and container networking.
+
+```bash
+konvoy deploy kubernetes
+konvoy deploy container-networking
+```
+
+Once the above commands finish, Kubernetes is installed.
+
+### Setting up port forwarding for API server access
+
+```bash
+tsh ssh -L 6443:172.17.1.251:6443 root@control-plane
+```
+
+The above command will connect to control plane node via the bootstrap node (proxy).
+Then it will open a listening socket on localhost:6443 and will forward all incoming connections to 172.17.1.251:6443 (API server LB address) via the SSH tunnel.
+
+Once that is done, modify `admin.conf` in the current working directory to use `localhost:6443` for the API server address.
+Then, you should be able to use `kubectl` to access the API server:
+
+```bash
+export KUBECONFIG=admin.conf
+kubectl get nodes
+```
+
+### Deploy Addons
+
+```bash
+konvoy deploy addons
+```
+
 ### Clean up
 
 ```bash
