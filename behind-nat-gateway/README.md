@@ -164,6 +164,8 @@ kubectl get nodes
 konvoy deploy addons
 ```
 
+Note that if you are using the docker based installer, you need to change the API server address to `host.docker.internal:6443`.
+
 ### Clean up
 
 ```bash

@@ -8,7 +8,9 @@ spec:
     version: 1.15.4
     controlPlane:
       controlPlaneEndpointOverride: 172.17.1.251:6443
-      certificate: {}
+      certificate:
+        subjectAlternativeNames:
+        - host.docker.internal
       keepalived:
         enabled: true
     networking:
