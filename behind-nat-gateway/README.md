@@ -164,6 +164,8 @@ Once the above commands finish, Kubernetes is installed.
 kubectl get nodes
 ```
 
+If your browser has proxy setup (i.e., `socks5://127.0.0.1:1080`), you should be able to access to ops portal and login properly.
+
 ### Clean up
 
 ```bash
