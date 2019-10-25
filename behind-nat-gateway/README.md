@@ -130,41 +130,39 @@ https://github.com/mesosphere/konvoy/pull/904
 konvoy check preflight
 ```
 
-### Deploy Kubernetes and container networking
+### Setting up proxy for API server and ops portal access
 
-Run the following commands to deploy Kubernetes and container networking.
+Teleport supports SOCKS5 proxy through the websocket tunnel.
+You just need to run the following command.
 
 ```bash
-konvoy deploy kubernetes
-konvoy deploy container-networking
+tsh ssh -N --proxy=localhost -D 0.0.0.0:1080 root@control-plane
+```
+
+Note: there is an upstream bug fix patch for Teleport that is needed.
+We'll work with upstream to get that patch merged as soon as possible.
+https://github.com/gravitational/teleport/pull/3110
+
+After than, you can configure the `HTTPS_PROXY` for your command line
+and for your browser.
+
+```bash
+export HTTPS_PROXY=socks5://127.0.0.1:1080
+```
+
+### Deploy Kubernetes and core Addons
+
+Run the following commands to deploy Kubernetes and core Addons:
+
+```bash
+konvoy up
 ```
 
 Once the above commands finish, Kubernetes is installed.
 
-### Setting up port forwarding for API server access
-
 ```bash
-tsh ssh -L 6443:172.17.1.251:6443 root@control-plane
-```
-
-The above command will connect to control plane node via the bootstrap node (proxy).
-Then it will open a listening socket on localhost:6443 and will forward all incoming connections to 172.17.1.251:6443 (API server LB address) via the SSH tunnel.
-
-Once that is done, modify `admin.conf` in the current working directory to use `localhost:6443` for the API server address.
-Then, you should be able to use `kubectl` to access the API server:
-
-```bash
-export KUBECONFIG=admin.conf
 kubectl get nodes
 ```
-
-### Deploy Addons
-
-```bash
-konvoy deploy addons
-```
-
-Note that if you are using the docker based installer, you need to change the API server address to `host.docker.internal:6443`.
 
 ### Clean up
 
